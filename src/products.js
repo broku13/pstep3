@@ -1,23 +1,22 @@
 import React from 'react';
 import {Link, NavLink, useRouteMatch, Route, Switch} from 'react-router-dom';
 import { useTable } from 'react-table';
+import { useState } from 'react';
+import Axios from 'axios';
 
 
 function Products(){
+
+    const [productList, setProductList] = useState([]);
+    const getProducts = () =>{
+        Axios.get("http://localhost:3001/products").then((response) => {
+            setProductList(response.data);
+        })
+    }
+
         const data = React.useMemo(() =>
-        [
-        {
-            productID: 1,
-            name: 'Lenovo Ideapad 720s',
-            price: 1100,
-        },
-        {
-            productID: 2,
-            name: 'iPhone 12',
-            price: 800,
-        },
-        ],
-        []
+        productList,
+        [productList]
         );
 
 
@@ -32,11 +31,11 @@ function Products(){
                         },
                         {   
                             Header: 'Name',
-                            accessor: 'name',
+                            accessor: 'productName',
                         },
                         {
                             Header: 'Price',
-                            accessor: 'price',
+                            accessor: 'productPrice',
                         },
                     ],
                 },
@@ -95,6 +94,7 @@ function Products(){
                             ))}
                         </tr>
                         ))}
+                        <button onClick={getProducts}>Show</button>
                     </thead>
                     <tbody {...getTableBodyProps()}>
                         {rows.map(row => {

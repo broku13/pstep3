@@ -1,30 +1,21 @@
 import React from 'react';
 import {Link, NavLink, useRouteMatch, Route, Switch} from 'react-router-dom';
 import { useTable } from 'react-table';
+import { useState } from 'react';
+import Axios from 'axios';
 
 
 
 function Customers(){
+    const [customerList, setCustomerList] = useState([]);
+    const getCustomers = () =>{
+        Axios.get("http://localhost:3001/customers").then((response) => {
+            setCustomerList(response.data);
+        })
+    }
         const data = React.useMemo(() =>
-        [
-        {
-            customerID: 1,
-            first_name: 'Pranav',
-            second_name: 'Simha',
-            age: 21,
-            credit: 'xxxxxxxxxxxxxx',
-            address: 'abc 1st street'
-        },
-        {
-            customerID: 2,
-            first_name: 'Sahil',
-            second_name: 'Jahni',
-            age: 21,
-            credit: 'xxxxxxxxxxxxxx',
-            address: 'abc 2nd street'
-        },
-        ],
-        []
+        customerList,
+        [customerList]
         );
 
 
@@ -39,11 +30,11 @@ function Customers(){
                         },
                         {   
                             Header: 'First Name',
-                            accessor: 'first_name',
+                            accessor: 'firstName',
                         },
                         {
-                            Header: 'Second Name',
-                            accessor: 'second_name',
+                            Header: 'Last Name',
+                            accessor: 'lastName',
                         },
                         {
                             Header: 'Age',
@@ -54,8 +45,8 @@ function Customers(){
                             accessor: 'credit'
                         },
                         {
-                            Header: 'Address',
-                            accessor: 'address'
+                            Header: 'Address ID',
+                            accessor: 'addressID'
                         }
                     ],
                 },
@@ -118,6 +109,7 @@ function Customers(){
                             ))}
                         </tr>
                         ))}
+                        <button onClick={getCustomers}>Show</button>
                     </thead>
                     <tbody {...getTableBodyProps()}>
                         {rows.map(row => {
